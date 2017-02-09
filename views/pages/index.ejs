@@ -1,0 +1,150 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <% include ../partials/head %>
+</head>
+<form>
+<body class="container" onload = "displayList()">
+
+   <main>
+       <div class="jumbotron">
+       <p><b>Todo App :  </b>Your list....</p>
+           <div id="result">
+           </div>
+             
+       </div>
+
+   </main>
+   <script
+ src="https://code.jquery.com/jquery-3.1.1.min.js"
+ integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+ crossorigin="anonymous">
+ </script>
+ <script>
+ let indicesArray = []
+const displayList = function () {$.get( "/api/read", function( data ) {
+ 
+ let result = '<ol>';
+ for(let iter = 0; iter < data.length; iter++) {
+   result += `<li>${data[iter].description}      ${data[iter].status}</li>`
+   indicesArray.push(data[iter].id)
+ }
+ $( "#result" ).html( (result) );
+ $.each(data, function (i, item) {
+    $('#indices').append($('<option>', { 
+        value: i,
+        text : i
+    }));
+    });
+
+});}
+</script>
+</form>
+
+<form>
+        <h4>Add a task<h4>
+          <div class="row">
+           <div class="col-lg-6">
+              <div class="input-group">
+                <input id="task" type="text" class="form-control" placeholder="Enter new task ..." name="data">
+                <span class="input-group-btn">
+                  <button id = "button" class="btn btn-default" type="submit">Go!</button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+          </div><!-- /.row -->
+</form>
+        <script>
+        
+            $("#button").click(function(){
+            let task = $('#task').val();
+            $.post(`/api/write/${task}`, task, function(data, status){
+            });
+            });
+        
+        //addElement();
+        </script>
+        <br>
+        <br>
+        <form action="/" >
+        <h4>Delete a task<h4>
+          <div class="form-group">
+          <select name = "index" id="indices">
+            
+          </select>
+            
+            <button id="deleteButton" type="submit" class="btn btn-default">Go! </button>
+            <br>
+        
+          </div>
+          </form>
+          <script>
+
+                $("#deleteButton").click(function(){
+                let index = $('#indices').val();
+                $.ajax({
+                url: `/api/destroy/${indicesArray[index]}`,
+                type: 'DELETE',
+                success: console.log(index)
+                     });
+                });
+          </script>
+          <form>
+          <h4> Update A Task Present In the To Do List </h4>
+          <input type="text" id="updateLine" name="updateToDoNumber" placeholder="enter TODO number">
+<input type="text" id="updateText" name="updateToDoText" placeholder="enter text for TODO">
+<input type="text" id="updateStatus" name="updateToDoStatus" placeholder="enter status for new TODO">
+  <button id="btn3" onclick="buttonClick()">Click To Update</button><br>
+  </form>
+  <script>
+function buttonClick(buttonElement) {
+    let buttonClicked = buttonElement
+   {
+
+         const updateToDoLine = document.getElementById("updateLine").value
+          const updateToDoText = document.getElementById("updateText").value
+          const updateToDoStatus = document.getElementById("updateStatus").value
+          const data = { description: updateToDoText,
+            status: updateToDoStatus}
+          fetch(`/api/update/${updateToDoLine}`, {
+            method: "put",
+            body: JSON.stringify(data),
+            headers: {
+      'Content-Type': 'application/json'
+    }
+          }).then((response) => {
+            console.log(response)
+          })
+            .catch((response) => {
+              console.log(response)
+            });
+    }
+    let indicesArray = []
+const displayList = function () {$.get( "/api/read", function( data ) {
+ 
+ let result = '<ol>';
+ for(let iter = 0; iter < data.length; iter++) {
+   result += `<li>${data[iter].description}      ${data[iter].status}</li>`
+   indicesArray.push(data[iter].id)
+ }
+ $( "#result" ).html( (result) );
+ $.each(data, function (i, item) {
+    $('#indices').append($('<option>', { 
+        value: i,
+        text : i
+    }));
+    });
+
+});}
+}
+buttonClick();
+
+  </script>
+         <footer>
+       <% include ../partials/footer %>
+   </footer>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <% include ../partials/head %>
+</head>
+
+<body class="container">
+
+   <main>
+       <div class="jumbotron">
+       <p><b>Todo App :  </b>Your list....</p>
+           <div id="result">
+           </div>
+             
+       </div>
+
+   </main>
+
+   <footer>
+       <% include ../partials/footer %>
+   </footer>
+   <script
+ src="https://code.jquery.com/jquery-3.1.1.min.js"
+ integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+ crossorigin="anonymous">
+ </script>
+ <script>
+$.get( "/api/read", function( data ) {
+ 
+ let result = '';
+ for(let iter = 0; iter < data.length; iter++) {
+   result += `<li> ${data[iter].description} </li>`
+ }
+ $( "#result" ).html( (result) );
+});
+</script>
+</body>
+</html>
